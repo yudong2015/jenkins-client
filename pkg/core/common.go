@@ -80,7 +80,7 @@ func (j *JenkinsCore) GetClient() (client *http.Client) {
 func (j *JenkinsCore) ProxyHandle(request *http.Request) {
 	if j.ProxyAuth != "" {
 		basicAuth := "Basic " + base64.StdEncoding.EncodeToString([]byte(j.ProxyAuth))
-		Logger.Debug("setting proxy for HTTP request", zap.String("header", basicAuth))
+		Logger.Info("setting proxy for HTTP request", zap.String("header", basicAuth))
 		request.Header.Add("Proxy-Authorization", basicAuth)
 	}
 }
@@ -179,7 +179,7 @@ func (j *JenkinsCore) ErrorHandle(statusCode int, data []byte) (err error) {
 		err = fmt.Errorf("unexpected status code: %d", statusCode)
 	}
 
-	Logger.Debug("get response", zap.String("data", string(data)))
+	Logger.Info("get response", zap.String("data", string(data)))
 	return
 }
 
@@ -232,7 +232,7 @@ func (j *JenkinsCore) RequestWithResponse(method, api string, headers map[string
 	client := j.GetClient()
 
 	if curlCmd, curlErr := http2curl.GetCurlCommand(req); curlErr == nil {
-		Logger.Debug("HTTP request as curl", zap.String("cmd", curlCmd.String()))
+		Logger.Info("HTTP request as curl", zap.String("cmd", curlCmd.String()))
 	}
 	return client.Do(req)
 }
@@ -251,7 +251,7 @@ func (j *JenkinsCore) Request(method, api string, headers map[string]string, pay
 		return
 	}
 
-	Logger.Debug("send HTTP request", zap.String("URL", requestURL), zap.String("method", method))
+	Logger.Info("send HTTP request", zap.String("URL", requestURL), zap.String("method", method))
 	if req, err = http.NewRequest(method, requestURL, payload); err != nil {
 		return
 	}
@@ -267,7 +267,7 @@ func (j *JenkinsCore) Request(method, api string, headers map[string]string, pay
 	}
 
 	if curlCmd, curlErr := http2curl.GetCurlCommand(req); curlErr == nil {
-		Logger.Debug("HTTP request as curl", zap.String("cmd", curlCmd.String()))
+		Logger.Info("HTTP request as curl", zap.String("cmd", curlCmd.String()))
 	}
 
 	client := j.GetClient()
